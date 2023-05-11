@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 let requestId;
 let vampireFrames = 0;
 let gravity = 9.8;
+let blocks = []
 
 function clearCanvas (){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -14,15 +15,26 @@ function vampireAnimation (){
     }
 }
 
+/* function renderBlock (){
+    block.draw();
+} */
+
+/*     function plataform () {blocks.forEach((block) => {
+        renderBlock(block);
+    });*/
+
 function updateGame() {
     vampireFrames++;
     clearCanvas();
     background.draw();
     vampireAnimation();
     vampire.draw();
-    vampire.x += vampire.vx;
-    vampire.y += vampire.vy;
+    vampire.x += vampire.vx; 
+    vampire.y += vampire.vy; 
     vampire.y += gravity;
+    //plataform()
+    // git 
+    block.draw(); 
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -30,7 +42,6 @@ function updateGame() {
 
 function startGame(){
     if(!requestId){
-
         requestId = requestAnimationFrame(updateGame);
     }
 }
@@ -63,8 +74,8 @@ class Vampire {
     constructor() {
         this.width = 150;
         this.height = 150;
-        this.x =  40;
-        this.y = canvas.height - 200;
+        this.y =  40;
+        this.x = 200;
         this.vx = 0;
         this.vy = 0;
         this.animate = 0; // Movimiento de izquierda a derecha
@@ -98,14 +109,13 @@ class Vampire {
         )
     }
 
-    moveLeft() {
+    moveLefth() {
         this.vx -= 3;
-        this.position = 1;
+        // limite de velocidad 
     }
     
-    moveRight() {
+    moveRigth() {
         this.vx += 3;
-        this.position = 2;
     }
 
     jump(){
@@ -114,13 +124,39 @@ class Vampire {
 
 }
 
+class Block {
+    constructor() {
+        this.x = x;
+        this.y = y;
+        this.width = 50;
+        this.height = 50;
+        this.img = new Image();
+        this.img.src = '/sources/block.png';
+        this.img.onload = () => {
+            this.draw()
+        }
+    }
+
+    draw() {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
+    }
+}
+
 // INSTANCES
 const background = new Background();
 const vampire = new Vampire();
 
+/* const block = new Block(); */
+
+/* blocks.push(new Block(100, 200, 50, 50)); // First block at position (100, 200)
+blocks.push(new Block(300, 150, 80, 40)); // Second block at position (300, 150)
+blocks.push(new Block(200, 350, 60, 60)); */ // Third block at position (200, 350)
+
+
 // LISTENERS
 
-document.addEventListener('Keydown', e => {
+document.addEventListener('keydown', e => {
+    console.log(vampire)
     switch (e.keyCode){
     case 37:
         vampire.moveLefth()
@@ -132,3 +168,4 @@ document.addEventListener('Keydown', e => {
         vampire.jump()
         return;
 }})
+
