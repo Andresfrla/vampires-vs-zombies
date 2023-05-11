@@ -2,7 +2,7 @@ const canvas = document.getElementById('gameplay');
 const ctx = canvas.getContext('2d');    
 let requestId;
 let vampireFrames = 0;
-let gravity = 9.8;
+let gravity = 9.0;
 let blocks = []
 
 function clearCanvas (){
@@ -10,8 +10,8 @@ function clearCanvas (){
 }
 
 function vampireAnimation (){ 
-    if (vampireFrames % 5 === 0){
-        if (vampire.animate === 7){
+    if (vampireFrames % 10 === 0){
+        if (vampire.animate === 4){
             vampire.animate = 0;
         } else {
             vampire.animate++;
@@ -79,7 +79,7 @@ class Vampire {
         this.jumpStreng = 14;
         this.hp = 3;
         this.img = new Image();
-        this.img.src = '/sources/vampireWalk.png'
+        this.img.src = '/sources/vampireSprite.png'
         this.img.onload = () => {
             this.draw()
         }
@@ -94,10 +94,10 @@ class Vampire {
 
         ctx.drawImage(
             this.img,
-            (this.animate * 2048) / 16,
-            this.position,
-            2048/16,
-            128,
+            (this.animate * 640) / 5,
+            (this.position * 512) / 4,
+            640/5,
+            512/4,
             this.x,
             this.y,
             this.width,
@@ -107,17 +107,21 @@ class Vampire {
 
     moveLefth() {
         this.vx -= 3;
-        if (this.vx < -4) { this.vx = -4}
-        // limite de velocidad 
+        if (this.vx < -3) { this.vx = -3}
+        this.position = 2;
+        if (this.vx === 0){this.position = 0}
     }
     
     moveRigth() {
         this.vx += 3;
-        if (this.vx > 4) {this.vx = 4}
+        if (this.vx > 3) {this.vx = 3}
+        this.position = 1;
+        if (this.vx === 0){this.position = 0}
     }
 
     jump(){
         this.vy = -2*this.jumpStreng;
+        this.position = 3;
     }
 
 }
@@ -163,4 +167,3 @@ document.addEventListener('keydown', e => {
         vampire.jump()
         return;
 }})
-
