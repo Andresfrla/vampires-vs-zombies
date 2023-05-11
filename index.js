@@ -59,9 +59,27 @@ function updateGame() {
     generateZombies();
     drawZombies();
     checkCollisions();
+    drawInfo();
+    gameOver();
     if (requestId){
         requestAnimationFrame(updateGame);
     }
+}
+
+function gameOver(){
+    if (vampire.hp === 0){
+        ctx.font = '100px Verdana'
+        ctx.strokeStyle = 'red'
+        ctx.lineWidth = 2;
+        ctx.strokeText('Game Over', canvas.width/2 -300, canvas.height/2)
+    }
+}
+
+function drawInfo(){
+    ctx.font = '24px Verdana'
+    ctx.strokeStyle = 'red'
+    ctx.lineWidth = 2;
+    ctx.strokeText(`HP: ${vampire.hp}`, 50, 30)
 }
 
 function startGame(){
