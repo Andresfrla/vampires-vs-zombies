@@ -11,7 +11,11 @@ function clearCanvas (){
 
 function vampireAnimation (){ 
     if (vampireFrames % 5 === 0){
-
+        if (vampire.animate === 16){
+            vampire.animate = 0;
+        } else {
+            vampire.animate++;
+        }
     }
 }
 
@@ -34,7 +38,7 @@ function updateGame() {
     vampire.y += gravity;
     //plataform()
     // git 
-    block.draw(); 
+/*     block.draw();  */
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -74,7 +78,7 @@ class Vampire {
     constructor() {
         this.width = 150;
         this.height = 150;
-        this.y =  40;
+        this.y =  150;
         this.x = 200;
         this.vx = 0;
         this.vy = 0;
@@ -98,9 +102,9 @@ class Vampire {
 
         ctx.drawImage(
             this.img,
-            (this.animate * 1024) / 8,
+            (this.animate * 2048) / 16,
             this.position,
-            1024/8,
+            2048/16,
             128,
             this.x,
             this.y,
