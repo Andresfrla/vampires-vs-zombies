@@ -11,21 +11,13 @@ function clearCanvas (){
 
 function vampireAnimation (){ 
     if (vampireFrames % 5 === 0){
-        if (vampire.animate === 16){
+        if (vampire.animate === 7){
             vampire.animate = 0;
         } else {
             vampire.animate++;
         }
     }
 }
-
-/* function renderBlock (){
-    block.draw();
-} */
-
-/*     function plataform () {blocks.forEach((block) => {
-        renderBlock(block);
-    });*/
 
 function updateGame() {
     vampireFrames++;
@@ -38,7 +30,7 @@ function updateGame() {
     vampire.y += gravity;
     //plataform()
     // git 
-/*     block.draw();  */
+    block.draw(); 
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -84,7 +76,7 @@ class Vampire {
         this.vy = 0;
         this.animate = 0; // Movimiento de izquierda a derecha
         this.position = 0;
-        this.jumpStreng = 10;
+        this.jumpStreng = 14;
         this.hp = 3;
         this.img = new Image();
         this.img.src = '/sources/vampireWalk.png'
@@ -115,11 +107,13 @@ class Vampire {
 
     moveLefth() {
         this.vx -= 3;
+        if (this.vx < -4) { this.vx = -4}
         // limite de velocidad 
     }
     
     moveRigth() {
         this.vx += 3;
+        if (this.vx > 4) {this.vx = 4}
     }
 
     jump(){
@@ -130,10 +124,12 @@ class Vampire {
 
 class Block {
     constructor() {
-        this.x = x;
-        this.y = y;
-        this.width = 50;
-        this.height = 50;
+        this.x = 100;
+        this.y = 200;
+        this.x1 = 500;
+        this.y1 = 270;
+        this.width = 200;
+        this.height = 40;
         this.img = new Image();
         this.img.src = '/sources/block.png';
         this.img.onload = () => {
@@ -143,24 +139,19 @@ class Block {
 
     draw() {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
+        ctx.drawImage(this.img, this.x1, this.y1, this.width, this.height)
     }
 }
 
 // INSTANCES
 const background = new Background();
 const vampire = new Vampire();
-
-/* const block = new Block(); */
-
-/* blocks.push(new Block(100, 200, 50, 50)); // First block at position (100, 200)
-blocks.push(new Block(300, 150, 80, 40)); // Second block at position (300, 150)
-blocks.push(new Block(200, 350, 60, 60)); */ // Third block at position (200, 350)
+const block = new Block();
 
 
 // LISTENERS
 
 document.addEventListener('keydown', e => {
-    console.log(vampire)
     switch (e.keyCode){
     case 37:
         vampire.moveLefth()
