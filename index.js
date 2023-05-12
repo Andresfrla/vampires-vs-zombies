@@ -33,26 +33,31 @@ function checkCollisions (){
         }
     })
 
-    if (vampire.x + vampire.width > block.x && vampire.x < block.x + block.width &&
-        vampire.y + vampire.height > block.y && vampire.y < block.y + block.height) {
-      // Colisión detectada, ajustar la posición del personaje si está dentro del bloque
-      if (vampire.x + vampire.width > block.x && vampire.vx > 0) {
-        vampire.x = block.x - vampire.width;
+    if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
+     vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
         vampire.vx = 0;
-      }
-      if (vampire.x < block.x + block.width && vampire.vx < 0) {
-        vampire.x = block.x + block.width;
-        vampire.vx = 0;
-      }
-      if (vampire.y + vampire.height > block.y && vampire.vy > 0) {
-        vampire.y = block.y - vampire.height;
         vampire.vy = 0;
-      }
-      if (vampire.y < block.y + block.height && vampire.vy < 0) {
-        vampire.y = block.y + block.height;
-        vampire.vy = 0;
-      }
-    }
+     }
+
+    if (vampire.x < block.x1 + block.width && vampire.x + vampire.width > block.x1 &&
+        vampire.y < block.y1 + block.height && vampire.y + vampire.height > block.y1) {
+           vampire.vx = 0;
+           vampire.vy = 0;
+        }
+    
+        if (
+            (vampire.x < block.x + block.width &&
+              vampire.x + vampire.width > block.x &&
+              vampire.y < block.y + block.height &&
+              vampire.y + vampire.height > block.y) ||
+            (vampire.x < block.x1 + block.width &&
+              vampire.x + vampire.width > block.x1 &&
+              vampire.y < block.y1 + block.height &&
+              vampire.y + vampire.height > block.y1)
+          ) {
+            vampire.vx = 0;
+            vampire.vy = 0;
+          }
 }
 
 /* function moveRandomDirection(zombies) {
@@ -221,8 +226,8 @@ class Block {
         this.y = 200;
         this.x1 = 500;
         this.y1 = 250;
-        this.width = 200;
-        this.height = 40;
+        this.width = 150;
+        this.height = 30;
         this.img = new Image();
         this.img.src = '/sources/block.png';
         this.img.onload = () => {
