@@ -4,6 +4,7 @@ let requestId;
 let vampireFrames = 0;
 let gravity = 9.0;
 let obstacles = []
+let PumpkinToAdd = [];
 
 function clearCanvas (){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -38,6 +39,7 @@ function checkCollisions (){
         vampire.vx = 0;
         vampire.vy = 0;
      }
+     
 
     if (vampire.x < block.x1 + block.width && vampire.x + vampire.width > block.x1 &&
         vampire.y < block.y1 + block.height && vampire.y + vampire.height > block.y1) {
@@ -45,19 +47,6 @@ function checkCollisions (){
            vampire.vy = 0;
         }
     
-        if (
-            (vampire.x < block.x + block.width &&
-              vampire.x + vampire.width > block.x &&
-              vampire.y < block.y + block.height &&
-              vampire.y + vampire.height > block.y) ||
-            (vampire.x < block.x1 + block.width &&
-              vampire.x + vampire.width > block.x1 &&
-              vampire.y < block.y1 + block.height &&
-              vampire.y + vampire.height > block.y1)
-          ) {
-            vampire.vx = 0;
-            vampire.vy = 0;
-          }
 }
 
 /* function moveRandomDirection(zombies) {
@@ -79,6 +68,18 @@ function generateZombies (){
     }
 }
 
+function generatePumpkin (){
+    if (vampireFrames % 500 === 0){
+        const randomPosition = Math.floor(Math.random() * canvas.width - 50)
+        const pumpkin = new Pumpkin(randomPosition);
+        PumpkinToAdd.push(pumpkin)
+/*         moveRandomDirection(zombies); */
+    }
+}
+function drawPumpkin (){
+    PumpkinToAdd.forEach(pumpkin => pumpkin.draw())
+}
+
 function drawZombies(){
     obstacles.forEach(zombies => zombies.draw())
 }
@@ -96,6 +97,8 @@ function updateGame() {
     generateZombies();
     drawZombies(); 
 /*     zombies.x += zombies.vx; */
+    generatePumpkin ();
+    drawPumpkin ();
     checkCollisions();
     drawInfo();
     gameOver();
@@ -295,11 +298,28 @@ class Zombie {
     }
 }
 
+class Pumpkin {
+    constructor(x) {
+        this.x = x;
+        this.y = 0;
+        this.width = 50;
+        this.height = 50;
+        this.img = new Image();
+        this.img.src = '/sources/pumpkinSprite.png';
+    }
+
+    draw() {
+        this.y++;
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    } 
+} 
+
 // INSTANCES
 const background = new Background();
 const vampire = new Vampire();
 const block = new Block();
 const zombies = new Zombie();
+const pumpkin = new Pumpkin();
 
 // LISTENERS
 
