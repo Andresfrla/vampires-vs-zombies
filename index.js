@@ -10,7 +10,7 @@ function clearCanvas (){
 }
 
 function vampireAnimation (){ 
-    if (vampireFrames % 10 === 0){
+    if (vampireFrames % 20 === 0){
         if (vampire.animate === 4){
             vampire.animate = 0;
         } else {
@@ -32,13 +32,45 @@ function checkCollisions (){
             vampire.hp--;
         }
     })
+
+    if (vampire.x + vampire.width > block.x && vampire.x < block.x + block.width &&
+        vampire.y + vampire.height > block.y && vampire.y < block.y + block.height) {
+      // Colisión detectada, ajustar la posición del personaje si está dentro del bloque
+      if (vampire.x + vampire.width > block.x && vampire.vx > 0) {
+        vampire.x = block.x - vampire.width;
+        vampire.vx = 0;
+      }
+      if (vampire.x < block.x + block.width && vampire.vx < 0) {
+        vampire.x = block.x + block.width;
+        vampire.vx = 0;
+      }
+      if (vampire.y + vampire.height > block.y && vampire.vy > 0) {
+        vampire.y = block.y - vampire.height;
+        vampire.vy = 0;
+      }
+      if (vampire.y < block.y + block.height && vampire.vy < 0) {
+        vampire.y = block.y + block.height;
+        vampire.vy = 0;
+      }
+    }
 }
+
+/* function moveRandomDirection(zombies) {
+    const randomDirection = Math.random() < 0.5 ? 'left' : 'right';
+  
+    if (randomDirection === 'left') {
+      zombies.moveLeft();
+    } else {
+      zombies.moveRight();
+    }
+  } */
 
 function generateZombies (){
     if (vampireFrames % 150 === 0){
         const randomPosition = Math.floor(Math.random() * canvas.width - 50)
         const zombies = new Zombie(randomPosition);
         obstacles.push(zombies)
+/*         moveRandomDirection(zombies); */
     }
 }
 
@@ -57,7 +89,8 @@ function updateGame() {
     vampire.y += gravity;
     block.draw(); 
     generateZombies();
-    drawZombies();
+    drawZombies(); 
+/*     zombies.x += zombies.vx; */
     checkCollisions();
     drawInfo();
     gameOver();
@@ -114,8 +147,8 @@ class Background {
 
 class Vampire {
     constructor() {
-        this.width = 150;
-        this.height = 150;
+        this.width = 100;
+        this.height = 120;
         this.y =  150;
         this.x = 200;
         this.vx = 0;
@@ -140,25 +173,29 @@ class Vampire {
 
         ctx.drawImage(
             this.img,
-            (this.animate * 640) / 5,
-            (this.position * 512) / 4,
-            640/5,
-            512/4,
+            (this.animate * 400) / 5,
+            (this.position * 450) / 4,
+            400/5,
+            450/4,
             this.x,
             this.y,
             this.width,
             this.height
         )
+        
+        //ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Color rojo con transparencia
+        //ctx.fillRect(this.x, this.y, 50, 100);
+        
     }
 
-    moveLefth() {
+    moveLeft() {
         this.vx -= 3;
         if (this.vx < -3) { this.vx = -3}
         this.position = 2;
         if (this.vx === 0){this.position = 0}
     }
     
-    moveRigth() {
+    moveRight() {
         this.vx += 3;
         if (this.vx > 3) {this.vx = 3}
         this.position = 1;
@@ -197,12 +234,13 @@ class Block {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
         ctx.drawImage(this.img, this.x1, this.y1, this.width, this.height)
     }
+
 }
 
 class Zombie {
     constructor(x) {
-        this.width = 150;
-        this.height = 150;
+        this.width = 50;
+        this.height = 80;
         this.y =  canvas.height;
         this.x = x;
         this.animate = 0; // Movimiento de izquierda a derecha
@@ -223,10 +261,10 @@ class Zombie {
 
         ctx.drawImage(
             this.img,
-            (this.animate * 768) / 8,
-            (this.position * 192) / 2,
-            768/8,
-            192/2,
+            (this.animate * 260) / 8,
+            (this.position * 128) / 2,
+            260/8,
+            128/2,
             this.x,
             this.y,
             this.width,
@@ -234,11 +272,13 @@ class Zombie {
         )
     }
 
-    moveLefth() {
+    moveLeft() {
+        this.vx --;
         this.position = 1;
     }
     
-    moveRigth() {
+    moveRight() {
+        this.vx ++;
         this.position = 0;
     }
 
@@ -261,10 +301,10 @@ const zombies = new Zombie();
 document.addEventListener('keydown', e => {
     switch (e.keyCode){
     case 37:
-        vampire.moveLefth()
+        vampire.moveLeft()
         return;
     case 39:
-        vampire.moveRigth()
+        vampire.moveRight()
         return;
     case 38:
         vampire.jump()
