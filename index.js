@@ -246,27 +246,37 @@ class Block {
 }
 
 class Zombie {
-    constructor(x) {
+    constructor(x = 0, looking = 'left') {
         this.width = 50;
         this.height = 80;
-        this.y =  canvas.height;
+        this.y =  0;
         this.x = x;
+        this.vx,
+        this.vy,
         this.animate = 0; // Movimiento de izquierda a derecha
         this.position = 0;
+        this.looking = looking;
+        this.maxSpeed = 3;
         this.img = new Image();
         this.img.src = '/sources/zombieSprite.png'
         this.img.onload = () => {
-            this.draw()
+            this.draw();
+        }
+        this.imgInverted = new Image();
+        this.imgInverted.src = '/sources/zombieSpriteInverted.png'
+        this.imgInverted.onload = () => {
+            draw();
         }
     }
 
     draw (){
         if (this.y > canvas.height - this.height) {
-            this.y = canvas.height - this.height 
+            this.y = canvas.height - this.height ;
         } else {
-            this.vy++
-        } 
+            this.vy += 0.01;
+        }
 
+        if (this.looking === 'left'){
         ctx.drawImage(
             this.img,
             (this.animate * 260) / 8,
@@ -274,21 +284,23 @@ class Zombie {
             260/8,
             128/2,
             this.x,
-            this.y,
+            this.y++,
             this.width,
             this.height
-        )
-    }
-
-    moveLeft() {
-        this.vx --;
-        this.position = 1;
-    }
-    
-    moveRight() {
-        this.vx ++;
-        this.position = 0;
-    }
+        );
+        } else {
+            context.drawImage(
+            this.imgInverted,
+            (this.animate * 260) / 8,
+            (this.position * 128) / 2,
+            260/8,
+            128/2,
+            this.x,
+            this.y++,
+            this.width,
+            this.height
+            );
+        }}
 
     isTouching(obstacle) {
         return (
@@ -326,12 +338,15 @@ const pumpkin = new Pumpkin();
 document.addEventListener('keydown', e => {
     switch (e.keyCode){
     case 37:
+        e.preventDefault()
         vampire.moveLeft()
         return;
     case 39:
+        e.preventDefault()
         vampire.moveRight()
         return;
     case 38:
+        e.preventDefault()
         vampire.jump()
         return;
 }})
