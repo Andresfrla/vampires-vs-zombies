@@ -42,7 +42,22 @@ function checkCollisions (){
         }
     })
 
-    if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
+
+    if (
+        (vampire.x < block.x + block.width &&
+        vampire.x + vampire.width > block.x &&
+        vampire.y < block.y + block.height &&
+        vampire.y + vampire.height > block.y) ||
+        (vampire.x < block.x1 + block.width &&
+        vampire.x + vampire.width > block.x1 &&
+        vampire.y < block.y1 + block.height &&
+        vampire.y + vampire.height > block.y1)
+        ) {
+        vampire.vy = 0;
+        vampire.y = block.y - vampire.height; 
+        }
+
+/*     if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
     vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
         vampire.vx = 0;
         vampire.vy = 0;
@@ -52,8 +67,7 @@ function checkCollisions (){
         vampire.y < block.y1 + block.height && vampire.y + vampire.height > block.y1) {
         vampire.vx = 0;
         vampire.vy = 0;
-        }
-    
+        } */
 }
 
 function generateZombies (){
@@ -61,7 +75,6 @@ function generateZombies (){
         const randomPosition = Math.floor(Math.random() * canvas.width - 50)
         const zombies = new Zombie(randomPosition);
         obstacles.push(zombies)
-/*         moveRandomDirection(zombies); */
     }
 }
 
@@ -91,6 +104,15 @@ function zombiesAnimation() {
         }}})
     }
 
+function pumpkinAnimation(){
+    obstacles.forEach((pumpkin) => {
+        if (vampireFrames % 50 === 0){
+    if (pumpkin.animate === 4){
+        pumpkin.animate = 0;
+    } else {
+        pumpkin.animate++;
+    }}})
+}
 function updateGame() {
     vampireFrames++;
     clearCanvas();
@@ -105,7 +127,8 @@ function updateGame() {
     drawZombies(); 
     zombiesAnimation();
     generatePumpkin ();
-/*     drawPumpkin (); */
+    drawPumpkin ();
+    pumpkinAnimation();
     checkCollisions();
     drawInfo();
     gameOver();
@@ -317,6 +340,8 @@ class Pumpkin {
     constructor(x) {
         this.x = x;
         this.y = 0;
+        this.animate = 0;
+        this.position = 0;
         this.width = 50;
         this.height = 50;
         this.img = new Image();
@@ -325,7 +350,16 @@ class Pumpkin {
 
     draw() {
         this.y++;
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        ctx.drawImage(
+            this.img, 
+            (this.animate * 126)/8,
+            this.position * 16,
+            126/8,
+            16,
+            this.x, 
+            this.y, 
+            this.width, 
+            this.height);
     } 
 } 
 
