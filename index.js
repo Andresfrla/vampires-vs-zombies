@@ -35,32 +35,21 @@ function checkCollisions (){
     })
 
     if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
-     vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
+    vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
         vampire.vx = 0;
         vampire.vy = 0;
-     }
-     
+}
 
     if (vampire.x < block.x1 + block.width && vampire.x + vampire.width > block.x1 &&
         vampire.y < block.y1 + block.height && vampire.y + vampire.height > block.y1) {
-           vampire.vx = 0;
-           vampire.vy = 0;
+        vampire.vx = 0;
+        vampire.vy = 0;
         }
     
 }
 
-/* function moveRandomDirection(zombies) {
-    const randomDirection = Math.random() < 0.5 ? 'left' : 'right';
-  
-    if (randomDirection === 'left') {
-      zombies.moveLeft();
-    } else {
-      zombies.moveRight();
-    }
-  } */
-
 function generateZombies (){
-    if (vampireFrames % 150 === 0){
+    if (vampireFrames % 200 === 0){
         const randomPosition = Math.floor(Math.random() * canvas.width - 50)
         const zombies = new Zombie(randomPosition);
         obstacles.push(zombies)
@@ -84,6 +73,23 @@ function drawZombies(){
     obstacles.forEach(zombies => zombies.draw())
 }
 
+function zombiesAnimation() {
+    obstacles.forEach((zombies) => {
+            if (vampireFrames % 30 === 0){
+        if (zombies.animate === 4){
+            zombies.animate = 0;
+        } else {
+            zombies.animate++;
+        }}})
+    }
+
+
+function zombiesWalk(zombies) {
+    if (zombies.x === canvas.heigth){
+        zombies.x = zombies.xDirection
+    }
+}
+
 function updateGame() {
     vampireFrames++;
     clearCanvas();
@@ -96,9 +102,9 @@ function updateGame() {
     block.draw(); 
     generateZombies();
     drawZombies(); 
-/*     zombies.x += zombies.vx; */
+    zombiesAnimation();
     generatePumpkin ();
-    drawPumpkin ();
+/*     drawPumpkin (); */
     checkCollisions();
     drawInfo();
     gameOver();
@@ -225,10 +231,10 @@ class Vampire {
 
 class Block {
     constructor() {
-        this.x = 100;
-        this.y = 200;
-        this.x1 = 500;
-        this.y1 = 250;
+        this.x = 200;
+        this.y = 300;
+        this.x1 = 700;
+        this.y1 = 300;
         this.width = 150;
         this.height = 30;
         this.img = new Image();
@@ -246,17 +252,18 @@ class Block {
 }
 
 class Zombie {
-    constructor(x = 0, looking = 'left') {
+    constructor(x = 0) {
         this.width = 50;
         this.height = 80;
         this.y =  0;
         this.x = x;
-        this.vx,
-        this.vy,
+        this.vx = 0,
+        this.vy = 0,
         this.animate = 0; // Movimiento de izquierda a derecha
         this.position = 0;
-        this.looking = looking;
-        this.maxSpeed = 3;
+        this.looking = Math.random() < 0.5 ? 'left' : 'right';;
+        this.xDirection = 0.2;
+        this.hp = 1;
         this.img = new Image();
         this.img.src = '/sources/zombieSprite.png'
         this.img.onload = () => {
@@ -265,37 +272,36 @@ class Zombie {
         this.imgInverted = new Image();
         this.imgInverted.src = '/sources/zombieSpriteInverted.png'
         this.imgInverted.onload = () => {
-            draw();
+            this.draw();
         }
     }
 
     draw (){
         if (this.y > canvas.height - this.height) {
-            this.y = canvas.height - this.height ;
+            this.y = canvas.height - this.height 
         } else {
-            this.vy += 0.01;
-        }
-
-        if (this.looking === 'left'){
-        ctx.drawImage(
-            this.img,
-            (this.animate * 260) / 8,
-            (this.position * 128) / 2,
-            260/8,
+            this.vy++
+        } 
+            if (this.looking === 'left'){
+            ctx.drawImage(
+            this.imgInverted,
+            (this.animate * 249) / 8,
+            (this.position * 128)/2,
+            249/8,
             128/2,
-            this.x,
+            this.x += this.xDirection,
             this.y++,
             this.width,
             this.height
         );
         } else {
-            context.drawImage(
-            this.imgInverted,
-            (this.animate * 260) / 8,
-            (this.position * 128) / 2,
-            260/8,
+            ctx.drawImage(
+            this.img,
+            (this.animate * 248) / 8,
+            (this.position * 128)/2,
+            249/8,
             128/2,
-            this.x,
+            this.x -= this.xDirection,
             this.y++,
             this.width,
             this.height
