@@ -34,6 +34,14 @@ function checkCollisions (){
         }
     })
 
+    obstacles.forEach((zombies) => {
+        if(zombies.x <= 0){
+            zombies.x = canvas.width - zombies.width;
+        } else if (zombies.x > canvas.width){
+            zombies.x = 0;
+        }
+    })
+
     if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
     vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
         vampire.vx = 0;
@@ -82,13 +90,6 @@ function zombiesAnimation() {
             zombies.animate++;
         }}})
     }
-
-
-function zombiesWalk(zombies) {
-    if (zombies.x === canvas.heigth){
-        zombies.x = zombies.xDirection
-    }
-}
 
 function updateGame() {
     vampireFrames++;
@@ -196,10 +197,6 @@ class Vampire {
             this.width,
             this.height
         )
-        
-        //ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Color rojo con transparencia
-        //ctx.fillRect(this.x, this.y, 50, 100);
-        
     }
 
     moveLeft() {
