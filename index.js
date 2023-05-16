@@ -1,9 +1,9 @@
 const canvas = document.getElementById('gameplay');
 const ctx = canvas.getContext('2d');    
 let requestId;
-let vampireFrames = 0;
+let frames = 0;
 let gravity = 9.0;
-let obstacles = []
+let zombies = [];
 let PumpkinToAdd = [];
 
 function clearCanvas (){
@@ -11,13 +11,13 @@ function clearCanvas (){
 }
 
 function vampireAnimation (){ 
-    if (vampireFrames % 20 === 0){
-        if (vampire.animate === 4){
+    if (frames % 20 === 0){     
+            if (vampire.animate === 4){
             vampire.animate = 0;
         } else {
             vampire.animate++;
         }
-    }
+}
 }
 
 function checkCollisions (){
@@ -27,18 +27,40 @@ function checkCollisions (){
         vampire.x = 0;
     }
 
-    obstacles.forEach((zombies, i) => {
-        if(vampire.isTouching(zombies)){
-            obstacles.splice(i, 1);
+    zombies.forEach((zombie, i) => {
+        if(vampire.isTouching(zombie)){
+            zombies.splice(i, 1);
             vampire.hp--;
         }
     })
 
-    obstacles.forEach((zombies) => {
-        if(zombies.x <= 0){
-            zombies.x = canvas.width - zombies.width;
-        } else if (zombies.x > canvas.width){
-            zombies.x = 0;
+    PumpkinToAdd.forEach((pumpkin, i) => {
+        if(vampire.isTouching(pumpkin)){
+            vampire.scale = true;
+            setTimeout(() => {vampire.scale = false} , 5000) 
+            PumpkinToAdd.splice(i, 1);
+        }
+    })
+
+    zombies.forEach((zombie) => {
+        if(zombie.x <= 0){
+            zombie.x = canvas.width - zombie.width;
+        } else if (zombie.x > canvas.width){
+            zombie.x = 0;
+        }
+
+        if (
+        (zombie.x < block.x + block.width &&
+        zombie.x + zombie.width > block.x &&
+        zombie.y < block.y + block.height &&
+        zombie.y + zombie.height > block.y) ||
+        (zombie.x < block.x1 + block.width &&
+        zombie.x + zombie.width > block.x1 &&
+        zombie.y < block.y1 + block.height &&
+        zombie.y + zombie.height > block.y1)
+        ) {
+        zombie.vy = 0;
+        zombie.y = block.y - zombie.height; 
         }
     })
 
@@ -71,19 +93,18 @@ function checkCollisions (){
 }
 
 function generateZombies (){
-    if (vampireFrames % 200 === 0){
+    if (frames % 200 === 0){
         const randomPosition = Math.floor(Math.random() * canvas.width - 50)
-        const zombies = new Zombie(randomPosition);
-        obstacles.push(zombies)
+        const zombie = new Zombie(randomPosition);
+        zombies.push(zombie)
     }
 }
 
 function generatePumpkin (){
-    if (vampireFrames % 500 === 0){
+    if (frames % 600 === 0){
         const randomPosition = Math.floor(Math.random() * canvas.width - 50)
         const pumpkin = new Pumpkin(randomPosition);
         PumpkinToAdd.push(pumpkin)
-/*         moveRandomDirection(zombies); */
     }
 }
 function drawPumpkin (){
@@ -91,30 +112,31 @@ function drawPumpkin (){
 }
 
 function drawZombies(){
-    obstacles.forEach(zombies => zombies.draw())
+    zombies.forEach(zombie => zombie.draw())
 }
 
-function zombiesAnimation() {
-    obstacles.forEach((zombies) => {
-            if (vampireFrames % 30 === 0){
-        if (zombies.animate === 4){
-            zombies.animate = 0;
+function zombieAnimation() {
+    zombies.forEach((zombie) => {
+            if (frames % 30 === 0){
+        if (zombie.animate === 4){
+            zombie.animate = 0;
         } else {
-            zombies.animate++;
+            zombie.animate++;
         }}})
     }
 
 function pumpkinAnimation(){
-    obstacles.forEach((pumpkin) => {
-        if (vampireFrames % 50 === 0){
-    if (pumpkin.animate === 4){
+    PumpkinToAdd.forEach((pumpkin) => {
+        if (frames % 20 === 0){
+    if (pumpkin.animate === 7){
         pumpkin.animate = 0;
     } else {
         pumpkin.animate++;
     }}})
 }
+
 function updateGame() {
-    vampireFrames++;
+    frames++;
     clearCanvas();
     background.draw();
     vampireAnimation();
@@ -125,13 +147,14 @@ function updateGame() {
     block.draw(); 
     generateZombies();
     drawZombies(); 
-    zombiesAnimation();
+    zombieAnimation();
     generatePumpkin ();
     drawPumpkin ();
     pumpkinAnimation();
     checkCollisions();
     drawInfo();
     gameOver();
+    WinTheGame();
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -143,6 +166,7 @@ function gameOver(){
         ctx.strokeStyle = 'red'
         ctx.lineWidth = 2;
         ctx.strokeText('Game Over', canvas.width/2 -300, canvas.height/2)
+        requestId = cancelAnimationFrame(requestId)
     }
 }
 
@@ -156,6 +180,15 @@ function drawInfo(){
 function startGame(){
     if(!requestId){
         requestId = requestAnimationFrame(updateGame);
+    }
+}
+
+function WinTheGame(){
+    if (frames > 100 && zombies === 0){
+        ctx.font = '100px Verdana'
+        ctx.strokeStyle = 'Green'
+        ctx.lineWidth = 2;
+        ctx.strokeText('You Win', canvas.width/2 -300, canvas.height/2)
     }
 }
 
@@ -187,28 +220,51 @@ class Vampire {
     constructor() {
         this.width = 100;
         this.height = 120;
+        this.width2 = 300;
+        this.height2 = 300;
         this.y =  150;
         this.x = 200;
         this.vx = 0;
         this.vy = 0;
         this.animate = 0; // Movimiento de izquierda a derecha
         this.position = 0;
+        this.scale = false,
         this.jumpStreng = 14;
         this.hp = 3;
+        this.img2 = new Image();
+        this.img2.src = '/sources/pumpkinPortal.png'
         this.img = new Image();
         this.img.src = '/sources/vampireSprite.png'
         this.img.onload = () => {
             this.draw()
         }
+        this.img2.onload = () => {
+            this.draw()
+        }
     }
 
     draw (){
+        console.log(this.scale)
         if (this.y > canvas.height - this.height) {
             this.y = canvas.height - this.height 
         } else {
             this.vy++
         } 
+        
+        if (this.scale){
+        ctx.drawImage(
+            this.img2,
+            (this.animate * 640) / 5,
+            (this.position * 200) / 2,
+            640/4,
+            200/2,
+            this.x,
+            this.y,
+            this.width2,
+            this.height2
+        )} 
 
+        else {
         ctx.drawImage(
             this.img,
             (this.animate * 400) / 5,
@@ -219,7 +275,7 @@ class Vampire {
             this.y,
             this.width,
             this.height
-        )
+        )}
     }
 
     moveLeft() {
@@ -342,8 +398,8 @@ class Pumpkin {
         this.y = 0;
         this.animate = 0;
         this.position = 0;
-        this.width = 50;
-        this.height = 50;
+        this.width = 30;
+        this.height = 30;
         this.img = new Image();
         this.img.src = '/sources/pumpkinSprite.png';
     }
@@ -352,9 +408,9 @@ class Pumpkin {
         this.y++;
         ctx.drawImage(
             this.img, 
-            (this.animate * 126)/8,
+            (this.animate * 124)/8,
             this.position * 16,
-            126/8,
+            124/8,
             16,
             this.x, 
             this.y, 
@@ -367,8 +423,9 @@ class Pumpkin {
 const background = new Background();
 const vampire = new Vampire();
 const block = new Block();
-const zombies = new Zombie();
+const zombie = new Zombie();
 const pumpkin = new Pumpkin();
+
 
 // LISTENERS
 
