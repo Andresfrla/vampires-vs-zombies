@@ -28,17 +28,24 @@ function checkCollisions (){
     }
 
     zombies.forEach((zombie, i) => {
-        if(vampire.isTouching(zombie)){
+        if(vampire.isTouching(zombie) && vampire.scale === false) {
             zombies.splice(i, 1);
             vampire.hp--;
         }
     })
 
+    zombies.forEach((zombie, i) => {
+        if(vampire.isTouching(zombie) && vampire.scale === true) {
+            zombies.splice(i, 1);
+        }
+    })    
+
     PumpkinToAdd.forEach((pumpkin, i) => {
         if(vampire.isTouching(pumpkin)){
             vampire.scale = true;
-            setTimeout(() => {vampire.scale = false} , 5000) 
+            setTimeout(() => {vampire.scale = false} , 2800) 
             PumpkinToAdd.splice(i, 1);
+            zombies.splice(i, 1);
         }
     })
 
@@ -78,18 +85,6 @@ function checkCollisions (){
         vampire.vy = 0;
         vampire.y = block.y - vampire.height; 
         }
-
-/*     if (vampire.x < block.x + block.width && vampire.x + vampire.width > block.x &&
-    vampire.y < block.y + block.height && vampire.y + vampire.height > block.y) {
-        vampire.vx = 0;
-        vampire.vy = 0;
-}
-
-    if (vampire.x < block.x1 + block.width && vampire.x + vampire.width > block.x1 &&
-        vampire.y < block.y1 + block.height && vampire.y + vampire.height > block.y1) {
-        vampire.vx = 0;
-        vampire.vy = 0;
-        } */
 }
 
 function generateZombies (){
@@ -220,8 +215,8 @@ class Vampire {
     constructor() {
         this.width = 100;
         this.height = 120;
-        this.width2 = 300;
-        this.height2 = 300;
+        this.width2 = 170;
+        this.height2 = 120;
         this.y =  150;
         this.x = 200;
         this.vx = 0;
@@ -255,9 +250,9 @@ class Vampire {
         ctx.drawImage(
             this.img2,
             (this.animate * 640) / 5,
-            (this.position * 200) / 2,
-            640/4,
-            200/2,
+            (this.position * 400) / 4,
+            640/5,
+            400/4,
             this.x,
             this.y,
             this.width2,
