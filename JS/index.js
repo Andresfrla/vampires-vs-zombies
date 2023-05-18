@@ -185,6 +185,9 @@ function WinTheGame(){
         ctx.strokeStyle = 'Green'
         ctx.lineWidth = 2;
         ctx.strokeText('You Win', canvas.width/2 -300, canvas.height/2)
+        const youWin = new Image();
+        youWin.src = 'images/youWin.png';
+        ctx.drawImage(youWin, 0, 0, 300, 300)
         requestId = cancelAnimationFrame(requestId)
     }
 }
