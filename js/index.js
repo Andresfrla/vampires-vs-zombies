@@ -149,7 +149,7 @@ function updateGame() {
     checkCollisions();
     drawInfo();
     gameOver();
-    WinTheGame();
+/*     WinTheGame(); */
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -161,7 +161,7 @@ function gameOver(){
         ctx.strokeStyle = 'red'
         ctx.lineWidth = 2;
         ctx.strokeText('Game Over', canvas.width/2 -300, canvas.height/2)
-        ctx.drawImage(background.img2, canvas.width/2 -300, canvas.height/2 -300)
+        // ctx.drawImage(background.img2, canvas.width/2 -300, canvas.height/2 -300)
         requestId = cancelAnimationFrame(requestId)
     }
 }
@@ -185,9 +185,9 @@ function WinTheGame(){
         ctx.strokeStyle = 'Green'
         ctx.lineWidth = 2;
         ctx.strokeText('You Win', canvas.width/2 -300, canvas.height/2)
-        const youWin = new Image();
-        youWin.src = 'images/youWin.png';
-        ctx.drawImage(youWin, 0, 0, 300, 300)
+        // const youWin = new Image();
+        // youWin.src = 'images/youWin.png';
+        // ctx.drawImage(youWin, 0, 0, 300, 300)
         requestId = cancelAnimationFrame(requestId)
     }
 }
@@ -205,7 +205,7 @@ class Background {
         this.width = canvas.width;
         this.height = canvas.height;
         this.img = new Image();
-        this.img.src = 'sources/Battleground.png';
+        this.img.src = './sources/Battleground.png';
         this.img.onload = () => {
             this.draw()
         }
@@ -232,9 +232,9 @@ class Vampire {
         this.jumpStreng = 14;
         this.hp = 3;
         this.img2 = new Image();
-        this.img2.src = 'sources/pumpkinPortal.png'
+        this.img2.src = './sources/pumpkinPortal.png'
         this.img = new Image();
-        this.img.src = 'sources/vampireSprite.png'
+        this.img.src = './sources/vampireSprite.png'
         this.img.onload = () => {
             this.draw()
         }
@@ -313,7 +313,7 @@ class Block {
         this.width = 150;
         this.height = 30;
         this.img = new Image();
-        this.img.src = 'sources/block.png';
+        this.img.src = './sources/block.png';
         this.img.onload = () => {
             this.draw()
         }
@@ -340,12 +340,12 @@ class Zombie {
         this.xDirection = 0.2;
         this.hp = 1;
         this.img = new Image();
-        this.img.src = 'sources/zombieSprite.png'
+        this.img.src = './sources/zombieSprite.png'
         this.img.onload = () => {
             this.draw();
         }
         this.imgInverted = new Image();
-        this.imgInverted.src = 'sources/zombieSpriteInverted.png'
+        this.imgInverted.src = './sources/zombieSpriteInverted.png'
         this.imgInverted.onload = () => {
             this.draw();
         }
@@ -400,7 +400,10 @@ class Pumpkin {
         this.width = 30;
         this.height = 30;
         this.img = new Image();
-        this.img.src = 'sources/pumpkinSprite.png';
+        this.img.src = './sources/PumpkinSprite.png';
+        this.img.onload = () => {
+            this.draw();
+        }
     }
 
     draw() {
