@@ -149,7 +149,7 @@ function updateGame() {
     checkCollisions();
     drawInfo();
     gameOver();
-/*     WinTheGame(); */
+    WinTheGame();
     if (requestId){
         requestAnimationFrame(updateGame);
     }
@@ -193,6 +193,8 @@ function WinTheGame(){
 }
 
 window.onload = () => {
+    document.getElementById('gameplay').style.display = 'none';
+    document.getElementById('logo').style.display = 'none';
     startGame();
 }
 
@@ -446,3 +448,9 @@ document.addEventListener('keydown', e => {
         vampire.jump()
         return;
 }})
+
+document.addEventListener('click', e => {
+    document.getElementById('game-intro').style.display = 'none'
+    document.getElementById('gameplay').style.display = 'block';
+    document.getElementById('logo').style.display = 'block';
+})
